@@ -10,7 +10,7 @@ export async function AppSidebar() {
   const { device } = await userAgent({ headers: await headers() });
   const deviceType = device?.type === "mobile" ? "mobile" : "desktop";
   console.log(deviceType);
-  return <>{deviceType === "desktop" ? <DesktopSidebar /> : <MobileMenu />}</>;
+  return <>{deviceType === "desktop" ? <DesktopSidebar /> : ""}</>;
 }
 
 // Mobile Menu Trigger Export (for use in header)

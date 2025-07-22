@@ -31,7 +31,7 @@ export function MobileMenu() {
 
       {/* Mobile Menu Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md bg-gray-900/95 backdrop-blur-xl border-gray-700/50 p-0">
+        <DialogContent className="sm:max-w-sm bg-gray-900/95 backdrop-blur-xl border-gray-700/50 p-0">
           <div className="flex flex-col h-[80vh]">
             {/* Header */}
             <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-gray-700/50">
