@@ -54,14 +54,6 @@ export function MobileMenu() {
                   FinTrakr
                 </DialogTitle>
               </div>
-              {/* <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-white p-1"
-                onClick={() => setIsOpen(false)}
-              >
-                <X className="w-5 h-5" />
-              </Button> */}
             </DialogHeader>
 
             {/* Navigation */}
