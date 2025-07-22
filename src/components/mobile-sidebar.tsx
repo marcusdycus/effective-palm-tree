@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  TrendingUp,
-  Wallet,
-  Settings,
-  LogOut,
-  User,
-  Menu,
-  X,
-} from "lucide-react";
+import { TrendingUp, Wallet, Settings, LogOut, User, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
