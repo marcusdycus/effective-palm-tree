@@ -69,7 +69,7 @@ export default async function DashboardPage() {
         <div className="ml-auto px-4">
           <div className="flex items-center gap-3">
             <Badge
-              variant="outline"
+              variant="default"
               className="border-emerald-400/40 text-emerald-300 bg-emerald-500/10 font-medium"
             >
               <Sparkles className="w-3 h-3 mr-1" />
