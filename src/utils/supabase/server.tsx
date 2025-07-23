@@ -1,4 +1,3 @@
-// supabase/server-actions.ts
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -11,10 +10,10 @@ export async function createClientForServerAction() {
     {
       cookies: {
         getAll: () =>
-          cookieStore.getAll().map(({ name, value }) => ({ name, value })),
+          cookieStore?.getAll().map(({ name, value }) => ({ name, value })),
         setAll: (cookiesToSet) => {
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options as any)
+            cookieStore?.set(name, value, options as any)
           );
         },
       },
