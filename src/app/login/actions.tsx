@@ -23,8 +23,16 @@ export async function login(formData: FormData) {
   if (error) {
     redirect("/error");
   }
+  // Check if user has completed onboarding (this would come from your database)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
 
-  if (user && session) {
+  if (!profile || !profile.completed_onboarding) {
+    redirect("/onboarding");
+  } else if (user && session) {
     redirect("/dashboard");
   }
 
@@ -43,11 +51,18 @@ export async function signup(formData: FormData) {
   };
 
   const { error } = await supabase.auth.signUp(data);
+  // Redirect to onboarding for new users
 
   if (error) {
     redirect("/error");
   }
 
-  revalidatePath("/", "layout");
-  redirect("/");
+  revalidatePath("/onboarding", "layout");
+  redirect("/onboarding");
+}
+
+export async function signout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
 }

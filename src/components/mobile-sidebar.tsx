@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import data from "./sidebar-data";
+import { signout } from "@/app/login/actions";
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +33,7 @@ export function MobileMenu() {
       {/* Mobile Menu Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-sm bg-gray-900/95 backdrop-blur-xl border-gray-700/50 p-0">
-          <div className="flex flex-col h-[80vh]">
+          <div className="flex flex-col h-[100vh]">
             {/* Header */}
             <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-gray-700/50">
               <div className="flex items-center gap-3">
@@ -147,7 +148,7 @@ export function MobileMenu() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-900/30 h-10"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => signout()}
                 >
                   <LogOut className="w-4 h-4 mr-3" />
                   Log out

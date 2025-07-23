@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { MobileMenuTrigger } from "@/components/app-sidebar";
+import { Greeting } from "@/components/ui/greeting";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -36,6 +37,14 @@ export default async function DashboardPage() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
     redirect("/login");
+  }
+  const { data: profileData, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+  if (profileError || !profileData || !profileData.completed_onboarding) {
+    redirect("/onboarding");
   }
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -90,7 +99,7 @@ export default async function DashboardPage() {
       <div className="px-4 pb-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold text-white">
-            Welcome back, John! 👋
+            <Greeting />, {profileData.name} 👋
           </h1>
           <p className="text-gray-400">
             Here's what's happening with your portfolio today.

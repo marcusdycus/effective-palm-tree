@@ -1,4 +1,4 @@
-"use client";
+"use server";
 import {
   TrendingUp,
   Wallet,
@@ -18,9 +18,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import data from "./sidebar-data";
+import { createClient } from "@/utils/supabase/server";
+import { signout } from "@/app/login/actions";
 
 // Desktop Sidebar Component
-export function DesktopSidebar() {
+export async function DesktopSidebar({ user }: { user: any }) {
+  const supabase = await createClient();
+
+  const { data: profileData, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.user.id)
+    .single();
+
+  if (profileError || !profileData) {
+    // redirect("/onboarding");
+    return null;
+  }
   return (
     <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-gray-900/95 backdrop-blur-xl border-r border-gray-700/50">
       {/* Header */}
@@ -51,7 +65,7 @@ export function DesktopSidebar() {
                   <a
                     href={item.url}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                      flex disabled:opacity-50 pointer-events-none items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
                       ${
                         item.isActive
                           ? "bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-white border border-purple-500/30 shadow-lg shadow-purple-500/10"
@@ -77,7 +91,7 @@ export function DesktopSidebar() {
                 <li key={item.title}>
                   <a
                     href={item.url}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition-all duration-200"
+                    className="flex disabled:opacity-50 pointer-events-none items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition-all duration-200"
                   >
                     <item.icon className="w-5 h-5 flex-shrink-0" />
                     <span>{item.title}</span>
@@ -107,8 +121,10 @@ export function DesktopSidebar() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold text-white">John Doe</p>
-                    <p className="text-xs text-gray-400">john@example.com</p>
+                    <p className="text-sm font-semibold text-white">
+                      {profileData.name}
+                    </p>
+                    <p className="text-xs text-gray-400">{profileData.email}</p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-400" />
                 </div>
@@ -120,20 +136,32 @@ export function DesktopSidebar() {
               align="end"
               sideOffset={8}
             >
-              <DropdownMenuItem className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors">
+              <DropdownMenuItem
+                disabled={true}
+                className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors"
+              >
                 <User className="w-4 h-4 mr-3" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors">
+              <DropdownMenuItem
+                disabled={true}
+                className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors"
+              >
                 <Wallet className="w-4 h-4 mr-3" />
                 <span>Billing</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors">
+              <DropdownMenuItem
+                disabled={true}
+                className="h-10 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white cursor-pointer transition-colors"
+              >
                 <Settings className="w-4 h-4 mr-3" />
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-gray-600/50 my-2" />
-              <DropdownMenuItem className="h-10 rounded-lg hover:bg-red-900/30 text-red-400 hover:text-red-300 cursor-pointer transition-colors">
+              <DropdownMenuItem
+                onClick={signout}
+                className="h-10 rounded-lg hover:bg-red-900/30 text-red-400 hover:text-red-300 cursor-pointer transition-colors"
+              >
                 <LogOut className="w-4 h-4 mr-3" />
                 <span>Log out</span>
               </DropdownMenuItem>
