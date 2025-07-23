@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import data from "./sidebar-data";
-import { createClient } from "@/utils/supabase/server";
+import { createClientForServerAction } from "@/utils/supabase/server";
 import { signout } from "@/app/login/actions";
 
 // Desktop Sidebar Component
 export async function DesktopSidebar({ user }: { user: any }) {
-  const supabase = await createClient();
+  const supabase = await createClientForServerAction();
 
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")

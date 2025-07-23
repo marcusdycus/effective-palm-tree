@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 export const Greeting = () => {
-  const [greeting, setGreeting] = useState("");
+  const [greeting, setGreeting] = useState("Welcome back");
 
   useEffect(() => {
     const getGreeting = () => {
@@ -18,10 +18,6 @@ export const Greeting = () => {
     };
     setGreeting(getGreeting());
   }, []);
-
-  if (!greeting) {
-    return <>Welcome back</>;
-  }
 
   return <>{greeting}</>;
 };

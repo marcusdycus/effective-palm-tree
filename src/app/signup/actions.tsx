@@ -1,13 +1,13 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createClientForServerAction } from "@/utils/supabase/server";
 
 export async function signup(prevState: unknown, formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
-  const supabase = await createClient();
+  const supabase = await createClientForServerAction();
   if (!name || !email || !password || !confirmPassword) {
     return { error: "missing-fields" };
   }

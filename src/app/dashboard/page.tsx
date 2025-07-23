@@ -29,11 +29,11 @@ import {
   MoreHorizontal,
   Sparkles,
 } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
+import { createClientForServerAction } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
+  const supabase = await createClientForServerAction();
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
     redirect("/login");

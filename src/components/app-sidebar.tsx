@@ -4,11 +4,11 @@ import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import { MobileMenu } from "./mobile-sidebar";
 import { DesktopSidebar } from "./desktop-sidebar";
-import { createClient } from "@/utils/supabase/server";
+import { createClientForServerAction } from "@/utils/supabase/server";
 
 // Main Sidebar Export
 export async function AppSidebar() {
-  const supabase = await createClient();
+  const supabase = await createClientForServerAction();
 
   const { data: user } = await supabase.auth.getUser();
   const { device } = await userAgent({ headers: await headers() });
