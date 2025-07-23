@@ -13,7 +13,6 @@ export async function AppSidebar() {
   const { data: user } = await supabase.auth.getUser();
   const { device } = await userAgent({ headers: await headers() });
   const deviceType = device?.type === "mobile" ? "mobile" : "desktop";
-  console.log(deviceType);
   return <>{deviceType === "desktop" ? <DesktopSidebar user={user} /> : ""}</>;
 }
 
