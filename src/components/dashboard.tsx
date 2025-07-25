@@ -131,6 +131,7 @@ export function DashboardClient({ userName }: DashboardClientProps) {
 
       <PlaidConnectBankLink />
 
+      <Widgets />
       {parsedData ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
           {/* Expenses List */}
@@ -212,6 +213,66 @@ export function DashboardClient({ userName }: DashboardClientProps) {
           </p>
         </div>
       )}
+    </div>
+  );
+}
+
+import { useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export function Widgets() {
+  const [items, setItems] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: plaidItems } = await supabase
+        .from("plaid_items")
+        .select("*");
+      const { data: txs } = await supabase
+        .from("transactions")
+        .select("*")
+        .order("date", { ascending: false })
+        .limit(10);
+
+      setItems(plaidItems || []);
+      setTransactions(txs || []);
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div className="p-4 space-y-6">
+      <h1 className="text-xl font-semibold">Connected Banks</h1>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item.id} className="p-3 rounded bg-gray-100">
+            <strong>{item.institution_name || "Unknown Bank"}</strong>
+          </li>
+        ))}
+      </ul>
+
+      <h2 className="text-xl font-semibold mt-8">Recent Transactions</h2>
+      <ul className="space-y-2">
+        {transactions.map((tx) => (
+          <li
+            key={tx.transaction_id}
+            className="p-3 rounded bg-white shadow border"
+          >
+            <div className="flex justify-between">
+              <span>{tx.name}</span>
+              <span className="font-medium">${tx.amount.toFixed(2)}</span>
+            </div>
+            <div className="text-sm text-gray-500">{tx.date}</div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

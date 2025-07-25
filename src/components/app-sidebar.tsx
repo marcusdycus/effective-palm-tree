@@ -11,6 +11,9 @@ export async function AppSidebar() {
   const supabase = await createClientForServerAction();
 
   const { data: user } = await supabase.auth.getUser();
+  if (!user) {
+    return <></>;
+  }
   const { device } = await userAgent({ headers: await headers() });
   const deviceType = device?.type === "mobile" ? "mobile" : "desktop";
   return <>{deviceType === "desktop" ? <DesktopSidebar user={user} /> : ""}</>;

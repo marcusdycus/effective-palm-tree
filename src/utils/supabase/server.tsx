@@ -2,7 +2,9 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function createClientForServerAction() {
-  const cookieStore = await cookies(); // async
+  const cookieStore = await cookies(); // ✅ no need to `await` here
+
+  const canSetCookies = typeof cookieStore.set === "function";
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,11 +13,16 @@ export async function createClientForServerAction() {
       cookies: {
         getAll: () =>
           cookieStore?.getAll().map(({ name, value }) => ({ name, value })),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore?.set(name, value, options as any)
-          );
-        },
+        setAll: canSetCookies
+          ? (cookiesToSet) => {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore?.set(name, value, options as any)
+              );
+            }
+          : () => {
+              // noop to avoid crashes in read-only contexts
+              return;
+            },
       },
     }
   );

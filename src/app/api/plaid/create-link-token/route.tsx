@@ -1,4 +1,7 @@
 // app/api/plaid/create-link-token/route.ts
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+
 import { NextResponse } from "next/server";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
@@ -14,11 +17,20 @@ const config = new Configuration({
 
 const plaidClient = new PlaidApi(config);
 
-export async function GET() {
+export async function GET(req: Request) {
+  const cookieStore = await cookies();
+  // Get authenticated user
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
   try {
     const response = await plaidClient.linkTokenCreate({
       user: {
-        client_user_id: "test-user-id", // Ideally this should be a real unique user ID
+        client_user_id: user?.id!,
       },
       client_name: "FinTrakr",
       products: (process.env.PLAID_PRODUCTS || "auth,transactions").split(
