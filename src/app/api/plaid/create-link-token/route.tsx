@@ -28,7 +28,6 @@ export async function GET() {
         ","
       ) as any,
       language: "en",
-      redirect_uri: process.env.PLAID_REDIRECT_URI || undefined,
     });
 
     return NextResponse.json({ link_token: response.data.link_token });
