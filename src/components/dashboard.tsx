@@ -32,6 +32,7 @@ import {
   Target,
   PiggyBank,
 } from "lucide-react";
+import { PlaidConnectBankLink } from "./plaid-connect-bank-link";
 
 interface ParsedExpense {
   id: string;
@@ -128,30 +129,47 @@ export function DashboardClient({ userName }: DashboardClientProps) {
         </div>
       </div>
 
+      <PlaidConnectBankLink />
+
       {parsedData ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
           {/* Expenses List */}
           <Card className="md:col-span-2 bg-gray-900/50 border-gray-700/50 text-white">
             <CardHeader>
               <CardTitle>Transactions</CardTitle>
-              <CardDescription>Your recent expenses from the imported statement.</CardDescription>
+              <CardDescription>
+                Your recent expenses from the imported statement.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
                 {parsedData.expenses.map((expense) => {
-                  const Icon = CATEGORY_ICONS[expense.category] || MoreHorizontal;
+                  const Icon =
+                    CATEGORY_ICONS[expense.category] || MoreHorizontal;
                   return (
-                    <li key={expense.id} className="flex items-center justify-between">
+                    <li
+                      key={expense.id}
+                      className="flex items-center justify-between"
+                    >
                       <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${CATEGORY_COLORS[expense.category] || CATEGORY_COLORS['Other']}`}>
+                        <div
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            CATEGORY_COLORS[expense.category] ||
+                            CATEGORY_COLORS["Other"]
+                          }`}
+                        >
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <p className="font-medium">{expense.description}</p>
-                          <p className="text-sm text-gray-400">{expense.date} - {expense.category}</p>
+                          <p className="text-sm text-gray-400">
+                            {expense.date} - {expense.category}
+                          </p>
                         </div>
                       </div>
-                      <p className="font-semibold text-lg">-${expense.amount.toFixed(2)}</p>
+                      <p className="font-semibold text-lg">
+                        -${expense.amount.toFixed(2)}
+                      </p>
                     </li>
                   );
                 })}
@@ -165,15 +183,19 @@ export function DashboardClient({ userName }: DashboardClientProps) {
               <CardTitle>Spending by Category</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(parsedData.categories).sort(([,a],[,b]) => b.total - a.total).map(([category, data]) => (
-                <div key={category}>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">{category}</span>
-                    <span className="text-sm font-semibold">${data.total.toFixed(2)}</span>
+              {Object.entries(parsedData.categories)
+                .sort(([, a], [, b]) => b.total - a.total)
+                .map(([category, data]) => (
+                  <div key={category}>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium">{category}</span>
+                      <span className="text-sm font-semibold">
+                        ${data.total.toFixed(2)}
+                      </span>
+                    </div>
+                    <Progress value={data.percentage} className="h-2" />
                   </div>
-                  <Progress value={data.percentage} className="h-2" />
-                </div>
-              ))}
+                ))}
             </CardContent>
           </Card>
         </div>
@@ -182,11 +204,14 @@ export function DashboardClient({ userName }: DashboardClientProps) {
           <div className="w-24 h-24 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
             <PieChart className="w-12 h-12 text-gray-500" />
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-2">No Data Yet</h2>
-          <p className="text-gray-400">Import a financial statement to get started.</p>
+          <h2 className="text-2xl font-semibold text-white mb-2">
+            No Data Yet
+          </h2>
+          <p className="text-gray-400">
+            Import a financial statement to get started.
+          </p>
         </div>
       )}
-
     </div>
   );
 }
