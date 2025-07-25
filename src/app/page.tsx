@@ -14,35 +14,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
-
-// const config = new Configuration({
-//   basePath: PlaidEnvironments["sandbox"],
-//   baseOptions: {
-//     headers: {
-//       "PLAID-CLIENT-ID": "6881107ec232ad0025879d2d",
-//       "PLAID-SECRET": "5649ba42136bce7767b5d8dcc06a27",
-//     },
-//   },
-// });
-
-// const plaid = new PlaidApi(config);
-
-// (async () => {
-//   try {
-//     const response = await plaid.linkTokenCreate({
-//       user: { client_user_id: "hello" },
-//       client_name: "Test App",
-//       products: ["auth"],
-//       country_codes: ["US"],
-//       language: "en",
-//     });
-//     console.log("Link Token:", response.data.link_token);
-//   } catch (err) {
-//     console.error("Plaid test error:", err.response?.data || err);
-//   }
-// })();
-
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
