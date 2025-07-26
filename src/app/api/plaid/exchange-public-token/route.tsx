@@ -21,9 +21,9 @@ export async function POST(req: Request) {
       public_token,
     });
     const accessToken = response.data.access_token;
+    const itemId = response.data.item_id;
 
-    // 🔐 Store accessToken securely in your DB or Supabase
-    return NextResponse.json({ accessToken });
+    return NextResponse.json({ accessToken, itemId });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

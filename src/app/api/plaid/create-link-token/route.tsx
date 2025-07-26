@@ -20,6 +20,7 @@ const plaidClient = new PlaidApi(config);
 export async function GET(req: Request) {
   const cookieStore = await cookies();
   // Get authenticated user
+
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   const {

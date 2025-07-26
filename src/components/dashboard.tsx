@@ -13,14 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PDFImportDialog } from "./pdf-import-dialog";
 import {
-  TrendingUp,
-  DollarSign,
   PieChart,
   Activity,
   Plus,
   MoreHorizontal,
   Sparkles,
-  AlertCircle,
   Coffee,
   Car,
   Home,
@@ -28,11 +25,12 @@ import {
   Utensils,
   Zap,
   CreditCard,
-  ArrowDownRight,
-  Target,
-  PiggyBank,
 } from "lucide-react";
 import { PlaidConnectBankLink } from "./plaid-connect-bank-link";
+
+import { useEffect } from "react";
+import { useUser } from "@supabase/auth-helpers-react";
+import { supabase } from "@/utils/supabase/client";
 
 interface ParsedExpense {
   id: string;
@@ -91,7 +89,6 @@ export function DashboardClient({ userName }: DashboardClientProps) {
   const handleDataParsed = (data: ParsedStatement) => {
     setParsedData(data);
   };
-  console.log(parsedData);
 
   return (
     <div className="flex flex-col gap-4">
@@ -217,28 +214,35 @@ export function DashboardClient({ userName }: DashboardClientProps) {
   );
 }
 
-import { useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 export function Widgets() {
+  const user = useUser(); // 🔑 Track the user
+
   const [items, setItems] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: plaidItems } = await supabase
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        console.warn("No active session");
+        return; // Or redirect to login
+      }
+
+      const { data: plaidItems, error: plaidError } = await supabase
         .from("plaid_items")
         .select("*");
-      const { data: txs } = await supabase
+
+      const { data: txs, error: txError } = await supabase
         .from("transactions")
         .select("*")
         .order("date", { ascending: false })
         .limit(10);
+
+      if (plaidError) console.error("Plaid Error:", plaidError);
+      if (txError) console.error("TX Error:", txError);
 
       setItems(plaidItems || []);
       setTransactions(txs || []);
@@ -247,12 +251,16 @@ export function Widgets() {
     fetchData();
   }, []);
 
+  console.log(items, transactions, "items and transactions");
   return (
     <div className="p-4 space-y-6">
       <h1 className="text-xl font-semibold">Connected Banks</h1>
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item.id} className="p-3 rounded bg-gray-100">
+          <li
+            key={item.id}
+            className="p-3 rounded bg-gray-900/50 border-gray-700/50 text-white shadow border"
+          >
             <strong>{item.institution_name || "Unknown Bank"}</strong>
           </li>
         ))}
@@ -263,7 +271,7 @@ export function Widgets() {
         {transactions.map((tx) => (
           <li
             key={tx.transaction_id}
-            className="p-3 rounded bg-white shadow border"
+            className="p-3 rounded bg-gray-900/50 border-gray-700/50 text-white shadow border"
           >
             <div className="flex justify-between">
               <span>{tx.name}</span>

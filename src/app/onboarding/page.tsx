@@ -27,7 +27,7 @@ import {
   PiggyBank,
   Sparkles,
 } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
+import { supabase } from "@/utils/supabase/client";
 
 const STEPS = [
   { id: 1, title: "Personal Info", icon: User },
@@ -169,7 +169,6 @@ export default function OnboardingPage() {
 
   const handleSubmit = async () => {
     // Here you would submit the data to your backend
-    const supabase = await createClient();
     const {
       data: { user },
       error: userError,

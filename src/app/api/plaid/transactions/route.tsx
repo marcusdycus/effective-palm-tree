@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/utils/supabase/client";
 
 const config = new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENV || "sandbox"],

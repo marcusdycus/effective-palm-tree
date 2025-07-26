@@ -1,9 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+"use server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { createClientForServerAction } from "@/utils/supabase/server";
 
 export async function storePlaidItem({
   access_token,
@@ -14,21 +11,26 @@ export async function storePlaidItem({
   item_id: string;
   institution_name: string | null;
 }) {
+  const supabase = await createClientForServerAction();
+
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-
   if (userError || !user) {
+    console.log(userError);
+    console.log(user);
     throw new Error("User must be logged in to store Plaid item");
   }
 
-  const { error: insertError } = await supabase.from("plaid_items").insert({
-    user_id: user.id,
-    access_token,
-    item_id,
-    institution_name,
-  });
+  const { error: insertError } = await supabase.from("plaid_items").insert([
+    {
+      user_id: user.id,
+      access_token,
+      item_id,
+      institution_name,
+    },
+  ]);
 
   if (insertError) {
     throw insertError;

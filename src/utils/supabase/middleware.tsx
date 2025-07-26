@@ -1,5 +1,43 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+
+export const decodeSupabaseCookies = (
+  cookies: ReturnType<NextRequest["cookies"]["getAll"]>
+) => {
+  return cookies.map(({ name, value }) => {
+    // Decode base64-encoded JSON strings if needed
+    if (value.startsWith("base64-")) {
+      const base64 = value.replace("base64-", "");
+      try {
+        const json = JSON.parse(
+          Buffer.from(base64, "base64").toString("utf-8")
+        );
+        return { name, value: JSON.stringify(json) };
+      } catch {
+        return { name, value }; // fallback
+      }
+    }
+    return { name, value };
+  });
+};
+
+export const encodeSupabaseCookies = (
+  cookies: ({ name: string; value: string } & CookieOptions)[]
+) => {
+  return cookies.map(({ name, value, ...options }) => {
+    // Encode JSON strings to base64 if needed
+    try {
+      const json = JSON.parse(value);
+      return {
+        name,
+        value: "base64-" + Buffer.from(JSON.stringify(json)).toString("base64"),
+        ...options,
+      };
+    } catch {
+      return { name, value, ...options }; // fallback
+    }
+  });
+};
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -12,16 +50,14 @@ export async function updateSession(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll();
+          return decodeSupabaseCookies(request.cookies.getAll());
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+          const encodedCookies = encodeSupabaseCookies(cookiesToSet);
           supabaseResponse = NextResponse.next({
             request,
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
+          encodedCookies.forEach(({ name, value, ...options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );
         },
