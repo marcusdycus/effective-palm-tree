@@ -41,7 +41,7 @@ export function PlaidConnectBankLink() {
     <Button
       onClick={() => open()}
       disabled={!ready}
-      className="px-4 py-2 max-w-52 rounded-md hover:cursor-pointer bg-white text-black border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-4 py-2 max-w-52 font-semibold text-sm text-primary rounded-md hover:cursor-pointer bg-white text-black border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       Connect Bank
     </Button>
